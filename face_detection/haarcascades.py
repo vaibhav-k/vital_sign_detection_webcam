@@ -28,6 +28,20 @@ while True:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
         face_roi = frame[y:y+h, x:x+w]
         # You can perform further processing on the extracted face_roi
+        # Define the region of interest (ROI) within the face ROI
+        # You can adjust the coordinates and size based on your specific requirements
+        roi_x = int(face_roi.shape[1] * 0.2)  # X-coordinate of the top-left corner
+        roi_y = int(face_roi.shape[0] * 0.1)  # Y-coordinate of the top-left corner
+        roi_width = int(face_roi.shape[1] * 0.6)  # Width of the ROI
+        roi_height = int(face_roi.shape[0] * 0.3)  # Height of the ROI
+
+        # Extract the smaller region of interest from the face ROI
+        vital_roi = face_roi[roi_y:roi_y + roi_height, roi_x:roi_x + roi_width]
+
+        # Display the extracted region of interest
+        cv2.imshow("Vital ROI", vital_roi)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
     # Display the resulting frame
     cv2.imshow('Face Detection', frame)
