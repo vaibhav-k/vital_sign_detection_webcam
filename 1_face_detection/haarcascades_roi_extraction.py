@@ -30,8 +30,10 @@ while True:
         # You can perform further processing on the extracted face_roi
         # Define the region of interest (ROI) within the face ROI
         # You can adjust the coordinates and size based on your specific requirements
-        roi_x = int(face_roi.shape[1] * 0.2)  # X-coordinate of the top-left corner
-        roi_y = int(face_roi.shape[0] * 0.1)  # Y-coordinate of the top-left corner
+        # X-coordinate of the top-left corner
+        roi_x = int(face_roi.shape[1] * 0.2)
+        # Y-coordinate of the top-left corner
+        roi_y = int(face_roi.shape[0] * 0.1)
         roi_width = int(face_roi.shape[1] * 0.6)  # Width of the ROI
         roi_height = int(face_roi.shape[0] * 0.3)  # Height of the ROI
 

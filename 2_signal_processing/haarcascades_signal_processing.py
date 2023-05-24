@@ -36,7 +36,7 @@ while True:
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
         face_roi = frame[y:y+h, x:x+w]
-        
+
         # Extract the smaller region of interest from the face ROI
         roi_x = int(face_roi.shape[1] * 0.2)
         roi_y = int(face_roi.shape[0] * 0.1)
@@ -63,7 +63,7 @@ while True:
                 signal = np.array(signal_buffer[-padlen:])
                 frequencies = fftfreq(padlen)
                 fft_values = fft(signal)
-                
+
                 # Filter the signal using a Butterworth filter
                 # Modify the filter parameters based on your requirements
                 cutoff_frequency = 0.1
@@ -72,7 +72,7 @@ while True:
                 print(f"filtered_signal = {filtered_signal}")
 
                 # Do further processing or analysis with the filtered signal
-                
+
             # Update the previous average color with the current average color
             previous_average_color = average_color
 
