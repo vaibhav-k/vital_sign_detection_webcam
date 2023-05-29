@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import sys
 from scipy.fft import fft, fftfreq
 from scipy.signal import butter, filtfilt, find_peaks
 
@@ -34,8 +35,12 @@ def calculate_heart_rate(signal_buffer, video_fps, heart_rate_buffer, heart_rate
 face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
-# Initialize the webcam
-video_capture = cv2.VideoCapture(0)
+# Initialize the video_capture
+video_capture = None
+if len(sys.argv) == 2:
+    video_capture = cv2.VideoCapture(sys.argv[1])
+else:
+    video_capture = cv2.VideoCapture(0)
 
 # Define variables for signal processing
 previous_average_color = None
@@ -82,11 +87,16 @@ while True:
         # Draw rectangles around the detected faces and extract ROIs
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+            cv2.putText(frame, "Face", (x+w, y+h),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
             face_roi = frame[y:y+h, x:x+w]
 
             # Extract the region of interest from the face ROI
             # Adjust the region based on the specific location for heart rate and respiration rate estimation
             forehead = frame[y:y+int(h/4), x:x+w]
+            cv2.rectangle(frame, (x, y), (x+w, y+int(h/4)), (0, 255, 0), 2)
+            cv2.putText(frame, "Forehead", (x+w, y+int(h/4)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
 
             # Calculate the average color in the vital ROI
             average_color = np.mean(forehead)
@@ -114,9 +124,6 @@ while True:
 
                 # Update the previous average color with the current average color
                 previous_average_color = average_color
-
-            # Display the extracted region of interest
-            cv2.imshow("Vital ROI", forehead)
 
     # Display the resulting frame
     cv2.imshow("Face Detection", frame)
