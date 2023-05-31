@@ -27,7 +27,12 @@ def smooth_signal(signal_buffer, padlen, cutoff_frequency):
     return filtered_signal
 
 
-def calculate_heart_rate(signal_buffer, video_fps, heart_rate_buffer, heart_rate_window):
+def calculate_heart_rate(
+    signal_buffer,
+    video_fps,
+    heart_rate_buffer,
+    heart_rate_window
+):
     """
     Calculates the heart rate based on the detected peaks in the signal.
 
@@ -60,7 +65,8 @@ def calculate_heart_rate(signal_buffer, video_fps, heart_rate_buffer, heart_rate
 
             # Print the average heart rate over the specified window
             print(
-                f"Heart Rate: {np.mean(heart_rate_buffer):.2f} beats per minute")
+                f"Heart Rate: {np.mean(heart_rate_buffer):.2f} beats per minute"
+            )
 
     return heart_rate_buffer
 
@@ -105,14 +111,7 @@ padlen = 100  # Length of the signal buffer
 
 # Variables for heart rate estimation
 heart_rate_buffer = []
-heart_rate_frequency = None
 heart_rate_window = 5  # Time window for heart rate calculation (in seconds)
-
-# Variables for respiration rate estimation
-respiration_rate_buffer = []
-respiration_rate_frequency = None
-# Time window for respiration rate calculation (in seconds)
-respiration_rate_window = 10
 
 frame_counter = 0
 face_detection_interval = 5  # Face detection interval in frames
