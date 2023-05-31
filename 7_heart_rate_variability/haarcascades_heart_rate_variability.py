@@ -18,8 +18,13 @@ def smooth_signal(signal_buffer, padlen, cutoff_frequency):
     Returns:
         numpy.ndarray: Filtered signal.
     """
+    # Butterworth filter design
     b, a = butter(4, cutoff_frequency, "low")
-    return filtfilt(b, a, np.array(signal_buffer[-padlen:]))
+
+    # Apply forward-backward filtering to smooth the signal
+    filtered_signal = filtfilt(b, a, np.array(signal_buffer[-padlen:]))
+
+    return filtered_signal
 
 
 def calculate_heart_rate(signal_buffer, video_fps, heart_rate_buffer, heart_rate_window):
@@ -35,15 +40,25 @@ def calculate_heart_rate(signal_buffer, video_fps, heart_rate_buffer, heart_rate
     Returns:
         list: Updated heart rate buffer.
     """
+
+    # Find peaks in the signal buffer
     peaks, _ = find_peaks(signal_buffer, height=0)
 
     if len(peaks) >= 2:
+        # Convert peak indices to peak times in seconds
         peak_times = np.array(peaks) / video_fps
+
+        # Calculate time differences between peaks
         time_diff = np.diff(peak_times)
+
+        # Calculate heart rate as beats per minute and add it to the buffer
         heart_rate_buffer.append(60 / np.mean(time_diff))
 
         if len(heart_rate_buffer) > heart_rate_window:
+            # If buffer size exceeds the specified window, truncate it to the window size
             heart_rate_buffer = heart_rate_buffer[-heart_rate_window:]
+
+            # Print the average heart rate over the specified window
             print(
                 f"Heart Rate: {np.mean(heart_rate_buffer):.2f} beats per minute")
 
@@ -61,7 +76,13 @@ def calculate_hrv(heart_rate_buffer):
         None
     """
     if len(heart_rate_buffer) >= 2:
-        hrv = np.std(np.diff(heart_rate_buffer))
+        # Calculate the difference between consecutive heart rate values
+        diff = np.diff(heart_rate_buffer)
+
+        # Calculate the standard deviation of the differences
+        hrv = np.std(diff)
+
+        # Print the HRV value with two decimal places
         print(f"Heart Rate Variability (HRV): {hrv:.2f} beats per minute")
 
 
