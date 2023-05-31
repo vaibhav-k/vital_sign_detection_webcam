@@ -18,21 +18,11 @@ def smooth_signal(signal_buffer, padlen, cutoff_frequency):
     Returns:
         numpy.ndarray: Filtered signal.
     """
-    signal = np.array(signal_buffer[-padlen:])
-    frequencies = fftfreq(padlen)
-    fft_values = fft(signal)
-
     b, a = butter(4, cutoff_frequency, "low")
-    filtered_signal = filtfilt(b, a, signal)
-    return filtered_signal
+    return filtfilt(b, a, np.array(signal_buffer[-padlen:]))
 
 
-def calculate_heart_rate(
-    signal_buffer,
-    video_fps,
-    heart_rate_buffer,
-    heart_rate_window
-):
+def calculate_heart_rate(signal_buffer, video_fps, heart_rate_buffer, heart_rate_window):
     """
     Calculates the heart rate based on the detected peaks in the signal.
 
@@ -50,13 +40,12 @@ def calculate_heart_rate(
     if len(peaks) >= 2:
         peak_times = np.array(peaks) / video_fps
         time_diff = np.diff(peak_times)
-        heart_rate = 60 / np.mean(time_diff)
-        heart_rate_buffer.append(heart_rate)
+        heart_rate_buffer.append(60 / np.mean(time_diff))
 
         if len(heart_rate_buffer) > heart_rate_window:
             heart_rate_buffer = heart_rate_buffer[-heart_rate_window:]
-            average_heart_rate = np.mean(heart_rate_buffer)
-            print(f"Heart Rate: {average_heart_rate:.2f} beats per minute")
+            print(
+                f"Heart Rate: {np.mean(heart_rate_buffer):.2f} beats per minute")
 
     return heart_rate_buffer
 
@@ -72,8 +61,7 @@ def calculate_hrv(heart_rate_buffer):
         None
     """
     if len(heart_rate_buffer) >= 2:
-        heart_rate_diff = np.diff(heart_rate_buffer)
-        hrv = np.std(heart_rate_diff)
+        hrv = np.std(np.diff(heart_rate_buffer))
         print(f"Heart Rate Variability (HRV): {hrv:.2f} beats per minute")
 
 
